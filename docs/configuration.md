@@ -81,8 +81,8 @@ Config.Proximity = {
     peds = false,         -- Peds and players stay behind the targeting key
     vehicles = 'named',   -- 'named' (only Config.Input.directKeyByName), 'all', or false
     inVehicle = false,    -- No prompts while driving
-    keys = { ... },       -- E / G / H, and Y / X / B on a pad, in the order options take them
-    maxDirect = 3,        -- More options than this: one prompt that opens the list
+    maxDirect = 1,        -- More options than this: one prompt, with three dots, that opens the list
+    keys = { ... },       -- E (Y / Triangle on a pad) first; the rest matter with maxDirect above 1
     blocks = { ... },     -- Game controls switched off while their button is a prompt
 }
 ```
@@ -90,9 +90,13 @@ Config.Proximity = {
 - An option can settle it for itself: `proximity = true` shows it without the
   key whatever it is on (a shop clerk, say), `proximity = false` keeps it
   behind the key.
-- An option that opens a submenu, or a target with more options than there are
-  keys, shows as one prompt marked with three dots; pressing it opens the list
-  on that target, which closes on a pick, on cancel, or on walking away.
+- One option is a button and its name. More than one, or an option that opens
+  a submenu, is a button, three dots and a name; pressing it opens the list on
+  that target, which closes on a pick, on cancel, or on walking away. The
+  list's name is "Interact" unless one of its options carries
+  `targetName = 'Fridge'`.
+- Options that each have their own key in `Config.Input.directKeyByName`
+  (Slim Jim, Smash Window) always stand side by side, each on its button.
 - `dot = true` (or a `'#rrggbb'`) on an option draws a coloured dot before its
   name, for something on sale.
 - With `vice_hud` running the prompt is its world prompt

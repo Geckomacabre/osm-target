@@ -5,11 +5,14 @@
   and pressing that does it.
 
   One target at a time: what the crosshair is on if it has anything to offer,
-  otherwise the nearest interaction point inside the view cone. Up to
-  #Config.Proximity.keys options get a key each. A target with more than that,
-  or an option that leads to a submenu, gets a prompt marked as opening a list,
-  and pressing it opens the full list on that target (Machine.open) -- closed
-  by picking something, cancelling or walking away.
+  otherwise the nearest interaction point inside the view cone. One option is
+  a button and its name. More than one (Config.Proximity.maxDirect), or an
+  option that leads to a submenu, is a button, three dots and a name -- the
+  reference's FRIDGE -- and pressing it opens the full list on that target
+  (Machine.open), closed by picking something, cancelling or walking away.
+  The exception is a set of options that each have a key of their own in
+  Config.Input.directKeyByName (Slim Jim and Smash Window): those stand side
+  by side, each on its button, as the reference shows that pair.
 
   Peds are left to the targeting key unless Config.Proximity.peds says
   otherwise: a street full of them would light a prompt on every one that
@@ -229,12 +232,34 @@ local function assign(entries)
   return keys
 end
 
----The rows to draw: one an option when there are keys enough, otherwise one
----row that opens the whole list.
+---Whether every one of several options has a key of its own by name.
+local function allNamed(entries)
+  if #entries < 2 then return false end
+  local named = Config.Input.directKeyByName or {}
+  for i = 1, #entries do
+    local name = entries[i].option.name
+    if not (name and named[name]) then return false end
+  end
+  return true
+end
+
+---The name a list goes by: what one of its options says the thing is
+---(`targetName = 'Fridge'`), else the general word.
+local function listName(entries)
+  for i = 1, #entries do
+    local name = entries[i].option.targetName
+    if type(name) == 'string' and name ~= '' then return name end
+  end
+  return Locale('interact')
+end
+
+---The rows to draw: a row an option when there are few enough (one, by
+---default) or each has its own named key, otherwise one row that opens the
+---whole list.
 local function build(entries)
   local pool = settings.keys or {}
-  local most = math.min(settings.maxDirect or #pool, #pool)
-  local keys = #entries <= most and assign(entries) or nil
+  local most = math.min(settings.maxDirect or 1, #pool)
+  local keys = (#entries <= most or allNamed(entries)) and assign(entries) or nil
   local rows = {}
 
   if keys then
@@ -250,13 +275,13 @@ local function build(entries)
     return rows
   end
 
-  -- Too many for a key each. One option that is itself a submenu keeps its own
-  -- name ("Fridge"); several get the general word.
+  -- Several: one row that opens the list. (A single option only gets here
+  -- with no key free for it, and keeps its own name.)
   local only = #entries == 1 and entries[1] or nil
   rows[1] = {
     entry = only,
     key = pool[1],
-    label = only and (only.label or only.option.label) or Locale('interact'),
+    label = only and (only.label or only.option.label) or listName(entries),
     more = true,
     list = only == nil,
   }

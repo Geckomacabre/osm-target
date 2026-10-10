@@ -197,14 +197,14 @@ Targeting scripts have been a staple of FiveM roleplay for years, but traditiona
 
 ## What This Fork Changes
 
+Everything above describes the underlying `osm-target` engine, which is
+OsmFX Mods' own work. This is what this fork actually changes on top of it,
+compared to [upstream](https://github.com/OsmFX-Mods/osm-target):
+
 - **Walk-up prompts.** No key to hold: walk up to a prop, an item or a zone
   and its options appear on it, each beside the key or pad button that does
   it. Peds stay behind the targeting key, so a busy street does not light up.
   See `Config.Proximity` in [Configuration](docs/configuration.md).
-
-Everything above describes the underlying `osm-target` engine, which is
-OsmFX Mods' own work. This is what this fork actually changes on top of it,
-compared to [upstream](https://github.com/OsmFX-Mods/osm-target):
 
 - **`Context Rail` replaces `Radial Sweep` as the shipped design.** Upstream
   ships the free `Radial Sweep` design pack by default and sells `Target VI`

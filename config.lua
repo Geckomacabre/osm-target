@@ -321,9 +321,19 @@ Config.Proximity = {
   -- Prompts while driving. Off: E is the horn and the pad buttons are spoken for.
   inVehicle = false,
 
-  -- The keys, in the order options take them (an option named in
-  -- Config.Input.directKeyByName keeps its own). A target with more options
-  -- than this many, or `maxDirect`, gets one prompt that opens the list.
+  -- How many options a target may show side by side, each on its own key.
+  -- 1 is the reference: a thing with one option is a button and its name, a
+  -- thing with more is a button, three dots and a name, and the button opens
+  -- the list. Options that each have a key of their own in
+  -- Config.Input.directKeyByName (Slim Jim, Smash Window) are always shown
+  -- side by side, whatever this says.
+  --
+  -- The list's name is the general word ("Interact") unless one of the
+  -- options says what the thing is: `targetName = 'Fridge'`.
+  maxDirect = 1,
+
+  -- The keys, in the order options take them. The first is the one a single
+  -- option and a list are on; the rest only matter with maxDirect above 1.
   --
   -- Y / Triangle first on a pad: it is the interact button of the game this
   -- is modelled on.
@@ -332,7 +342,6 @@ Config.Proximity = {
     { kbm = { 47 }, pad = { 203 } },  -- G / X, Square
     { kbm = { 74 }, pad = { 194 } },  -- H / B, Circle
   },
-  maxDirect = 3,
 
   -- Game controls that share a physical button with a key above, switched off
   -- while that key's prompt is on screen so one press does one thing. Keyed by
