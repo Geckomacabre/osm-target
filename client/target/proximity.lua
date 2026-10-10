@@ -42,6 +42,10 @@ local rad, deg, acos, sqrt = math.rad, math.deg, math.acos, math.sqrt
 
 local PED, VEHICLE = 1, 2
 
+-- vice_hud has one world prompt, shared with any other script that uses it.
+-- Naming ours means taking it down never takes down someone else's.
+local OWNER = 'osm-target'
+
 local function cameraBasis()
   local origin = GetFinalRenderedCamCoord()
   local rot = GetFinalRenderedCamRot(2)
@@ -316,7 +320,7 @@ local function hide()
   if was.own then
     Surfaces.send('menu', 'menu:close', {})
   else
-    pcall(function() exports.vice_hud:HideWorldActions() end)
+    pcall(function() exports.vice_hud:HideWorldActions(OWNER) end)
   end
 end
 
@@ -354,7 +358,7 @@ local function present(candidate, rows, sig)
       }
     end
     local ok = pcall(function()
-      exports.vice_hud:ShowWorldActions(options, candidate.anchor, { compact = false, centred = true })
+      exports.vice_hud:ShowWorldActions(options, candidate.anchor, { compact = false, centred = true, id = OWNER })
     end)
     if not ok then return end
   end
@@ -462,7 +466,7 @@ local function tick()
     local moved = #(candidate.anchor - shown.candidate.anchor) > 0.02
     shown.candidate, shown.rows = candidate, rows
     if moved and not shown.own then
-      pcall(function() exports.vice_hud:SetWorldActionsCoords(candidate.anchor) end)
+      pcall(function() exports.vice_hud:SetWorldActionsCoords(candidate.anchor, OWNER) end)
     end
     return
   end
