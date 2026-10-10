@@ -291,6 +291,60 @@ Config.Layers = {
   padControl = 204,
 }
 
+-- Walk-up prompts: no key held. Nothing shows until the player walks up to
+-- something; then whatever is within reach and in front of them shows what can
+-- be done with it, each option beside the key or pad
+-- button that does it. The targeting key (Config.Input.key) still works as
+-- before, and is how everything this leaves out is reached.
+--
+-- An option can settle it for itself: `proximity = true` shows it without the
+-- key whatever it is on, `proximity = false` keeps it behind the key.
+Config.Proximity = {
+  enabled = true,
+
+  distance = 2.0,      -- Metres: how close before a prompt comes up
+  angle = 30.0,        -- Degrees either side of where the camera looks
+  interval = 150,      -- Milliseconds between looks while a prompt is up
+  idleInterval = 250,  -- ... and while nothing is
+  cooldown = 600,      -- Milliseconds before a prompt returns after one is used
+
+  -- Peds and players stay behind the targeting key: on a busy street every one
+  -- that walked past would light a prompt. true puts them here as well.
+  peds = false,
+
+  -- Vehicles: 'named' shows only the options listed in
+  -- Config.Input.directKeyByName (Slim Jim, Smash Window), 'all' everything,
+  -- false nothing. 'named' because every vehicle carries door options, and the
+  -- pad's interact button is also how a car is got into.
+  vehicles = 'named',
+
+  -- Prompts while driving. Off: E is the horn and the pad buttons are spoken for.
+  inVehicle = false,
+
+  -- The keys, in the order options take them (an option named in
+  -- Config.Input.directKeyByName keeps its own). A target with more options
+  -- than this many, or `maxDirect`, gets one prompt that opens the list.
+  --
+  -- Y / Triangle first on a pad: it is the interact button of the game this
+  -- is modelled on.
+  keys = {
+    { kbm = { 51 }, pad = { 204 } },  -- E / Y, Triangle
+    { kbm = { 47 }, pad = { 203 } },  -- G / X, Square
+    { kbm = { 74 }, pad = { 194 } },  -- H / B, Circle
+  },
+  maxDirect = 3,
+
+  -- Game controls that share a physical button with a key above, switched off
+  -- while that key's prompt is on screen so one press does one thing. Keyed by
+  -- the control id in `keys`.
+  blocks = {
+    [204] = { 23, 75, 53, 56 },      -- Y: enter / leave vehicle, weapon special, drop weapon
+    [203] = { 22 },                  -- X: jump
+    [194] = { 45, 140, 141, 142 },   -- B: reload, melee
+    [47]  = { 58 },                  -- G: throw grenade
+  },
+}
+
 Config.Interaction = {
   -- Max distance: interaction range limit in meters
   distance = 7.0,
