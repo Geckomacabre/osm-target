@@ -37,11 +37,16 @@ local ctx = {
   player = nil,
   policy = nil,
   menu = nil,
+  layer = nil,
+  layerOf = Layers.of,
 }
 
 local function beginPass()
   ctx.player = Player.state()
   ctx.policy = Config.Options
+  -- A marker on something whose only options are on the other layer would lead
+  -- to a menu that opens empty, so the world indicators follow the layer too.
+  ctx.layer = Layers.active(ctx.player)
 end
 
 ---Populate probe context: set distance, entity handle, and world coordinates.
@@ -313,9 +318,12 @@ end
 local function nearest(a, b) return a.distance < b.distance end
 
 ---Run discovery pass: evaluate nearby points and populate visible indicator list.
-function Discovery.run(force)
+---@param force boolean? ignore the interval
+---@param always boolean? run even with indicator markers switched off: the
+---  walk-up prompts need the points whether or not markers are drawn on them
+function Discovery.run(force, always)
   local settings = Config.Indicators
-  if not settings.enabled then
+  if not settings.enabled and not always then
     Discovery.points = {}
     return Discovery.points
   end
